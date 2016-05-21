@@ -7,8 +7,8 @@
     <ProjectGuid>{FBADAAAC-2F6C-4D8A-98EC-0B064B888241}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BurgerBurgerBurger</RootNamespace>
-    <AssemblyName>BurgerBurgerBurger</AssemblyName>
+    <RootNamespace>Philhuge.Projects.BurgerBurgerBurger</RootNamespace>
+    <AssemblyName>Philhuge.Projects.BurgerBurgerBurger</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
