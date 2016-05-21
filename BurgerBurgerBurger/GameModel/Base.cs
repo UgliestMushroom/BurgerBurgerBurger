@@ -8,13 +8,16 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
     /// </summary>
     public class Base : BoardObject
     {
+        private Player Player { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="cellCol">Cell column on the board this Base is placed</param>
         /// <param name="cellRow">Cell row on the board this Base is placed</param>
-        public Base(int cellCol, int cellRow) : base(cellCol, cellRow)
+        public Base(int cellCol, int cellRow, Player player) : base(cellCol, cellRow)
         {
+            this.Player = player;
         }
 
         /// <summary>
@@ -23,7 +26,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// <param name="movingObject">Object that enters this Base's cell.</param>
         public override void InteractWithMovingObject(MovableObject movingObject)
         {
-            
+            this.Player.UpdateScore(movingObject.PointValue);
         }
     }
 }

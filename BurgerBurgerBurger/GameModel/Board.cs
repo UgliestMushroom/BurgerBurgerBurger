@@ -182,7 +182,16 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
                 ObjectAddedToBoardEvent(boardObject, null);
             }
         }
-        
+
+        /// <summary>
+        /// Update an object on the Board, either moving it from by cellCol/cellRow to the location specified by boardObject, 
+        /// or simply updating the properties of the object in place.
+        /// If no object is present at cellCol,cellRow, this function throws.
+        /// </summary>
+        /// <param name="cellCol">Cell column where the object is currently placed</param>
+        /// <param name="cellRow">Cell row where the object is currently placed</param>
+        /// <param name="boardObject">Object to update (update the col/row fields of this param to move it on the board)</param>
+        /// <param name="doNotify">True if this call should notify listeners of ObjectUpdatedOnBoardEvent</param>
         public void UpdateObjectOnBoard(int cellCol, int cellRow, BoardObject boardObject, bool doNotify = true)
         {
             if (!IsCellOccupied(cellCol, cellRow))
@@ -231,24 +240,46 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             }
         }
 
+        /// <summary>
+        /// Add a wall between two cells to the Board.
+        /// </summary>
+        /// <param name="cell1Col">Column of the first cell adjacent to the wall</param>
+        /// <param name="cell1Row">Row of the first cell adjacent to the wall</param>
+        /// <param name="cell2Col">Column of the second cell adjacent to the wall</param>
+        /// <param name="cell2Row">Row of the second cell adjacent to the wall</param>
         public void AddWallToBoard(int cell1Col, int cell1Row, int cell2Col, int cell2Row)
         {
             this.boardWalls.AddWall(cell1Col, cell1Row, cell2Col, cell2Row);
         }
 
+        /// <summary>
+        /// Add a Hole object to the Board.
+        /// </summary>
+        /// <param name="cellCol">Cell column where the Hole will be placed</param>
+        /// <param name="cellRow">Cell row where the Hole will be placed</param>
         public void AddHoleToBoard(int cellCol, int cellRow)
         {
             this.AddObjectToBoard(new Hole(cellCol, cellRow));
         }
 
-        public void AddBaseToBoard(int cellCol, int cellRow /* owner player */)
+        /// <summary>
+        /// Add a Base object to the Board.
+        /// </summary>
+        /// <param name="cellCol">Cell column where the Base will be placed</param>
+        /// <param name="cellRow">Cell row where the Base will be placed</param>
+        /// <param name="owner">Player who owns this base</param>
+        public void AddBaseToBoard(int cellCol, int cellRow, Player owner)
         {
-
+            this.AddObjectToBoard(new Base(cellCol, cellRow, owner));
         }
 
+        /// <summary>
+        /// Add a Spawner object to the Board.
+        /// </summary>
+        /// <param name="cellCol">Cell column where the Spawner will be placed</param>
+        /// <param name="cellRow">Cell row where the Spawner will be placed</param>
         public void AddSpawnerToBoard(int cellCol, int cellRow /* spawn direction */)
         {
-
         }
 
         /// <summary>

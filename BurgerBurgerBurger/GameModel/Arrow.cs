@@ -33,7 +33,6 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
         public void Kill()
         {
-
         }
     }
 }

@@ -2,6 +2,10 @@
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
+    /// <summary>
+    /// Player object.  A Player is not a physical entity on the board, but does own a Base
+    /// and places Arrows on the Board.
+    /// </summary>
     public class Player
     {
         /// <summary>
@@ -55,8 +59,13 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             this.placedArrowCount = 0;
             this.arrows = new Arrow[GameSettings.DEFAULT_MAX_ARROWS_PER_PLAYER];
         }
-        
 
+        /// <summary>
+        /// Attempt to Place an Arrow on the Board.  If an object already exists at the desired location, nothing happens.
+        /// </summary>
+        /// <param name="cellCol">Column of the cell where the Arrow should be placed</param>
+        /// <param name="cellRow">Row of the cell where the Arrow should be placed</param>
+        /// <param name="pointDirection">Direction the Arrow will point if placed</param>
         public void PlaceArrow(int cellCol, int cellRow, Direction pointDirection)
         {
             if (Board.Instance.IsCellOccupied(cellCol, cellRow))

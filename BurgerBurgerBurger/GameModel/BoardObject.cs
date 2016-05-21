@@ -5,7 +5,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
     /// <summary>
     /// Static object that is placed in a cell on the Board.  Interacts with ScoreObjects moving across the Board.
     /// </summary>
-    public abstract class BoardObject : IStaticObject
+    public abstract class BoardObject
     {
         /// <summary>
         /// Cell column on the board this object is placed
