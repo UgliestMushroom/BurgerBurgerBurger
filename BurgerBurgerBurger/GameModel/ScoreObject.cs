@@ -76,8 +76,8 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         {
             // Calculate proposed X / Y based on Speed and Direction
             int[] proposedMovePoint = CalculateProposedPositionAfterMove();
-
-            if (Board.IsPositionOutOfBounds(proposedMovePoint[0], proposedMovePoint[1]))
+            
+            if (Board.Instance.IsPositionOutOfBounds(proposedMovePoint[0], proposedMovePoint[1]))
             {
                 this.Turn();
                 return;
@@ -87,13 +87,13 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             int[] proposedMoveCell = new int[] { this.CurrentCellCol, this.CurrentCellRow };
             try
             {
-                proposedMoveCell = Board.CalculateCellFromPosition(proposedMovePoint[0], proposedMovePoint[1]);
+                proposedMoveCell = Board.Instance.CalculateCellFromPosition(proposedMovePoint[0], proposedMovePoint[1]);
             } catch (WouldHitWallException e)
             {
                 this.Turn();
                 return;
             }
-
+            
             // Actually move and notify
             this.X = proposedMovePoint[0];
             this.Y = proposedMovePoint[1];

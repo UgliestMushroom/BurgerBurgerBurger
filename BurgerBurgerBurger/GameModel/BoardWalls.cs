@@ -2,7 +2,7 @@
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
-    class BoardWalls
+    public class BoardWalls
     {
         private int NumBoardCols { get; set; }
         private int NumBoardRows { get; set; }

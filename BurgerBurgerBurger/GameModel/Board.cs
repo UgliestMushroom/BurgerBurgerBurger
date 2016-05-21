@@ -30,7 +30,25 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
         private List<BoardObject> BoardObjects;
 
-        public Board(int gameBoardStartX, int gameBoardStartY, int gameBoardWidth, int gameBoardHeight, int numBoardCols, int numBoardRows)
+        private static Board instance;
+        public static Board Instance
+        {
+            get
+            {
+                if (Board.instance == null)
+                {
+                    throw new Exception("Must call Board.ConfigureInstance first!");
+                }
+                return Board.instance;
+            }
+        } 
+
+        public static void ConfigureInstance(int gameBoardStartX, int gameBoardStartY, int gameBoardWidth, int gameBoardHeight, int numBoardCols, int numBoardRows)
+        {
+            Board.instance = new Board(gameBoardStartX, gameBoardStartY, gameBoardWidth, gameBoardHeight, numBoardCols, numBoardRows);
+        }
+
+        private Board(int gameBoardStartX, int gameBoardStartY, int gameBoardWidth, int gameBoardHeight, int numBoardCols, int numBoardRows)
         {
             this.GameBoardStartX = gameBoardStartX;
             this.GameBoardStartY = gameBoardStartY;
