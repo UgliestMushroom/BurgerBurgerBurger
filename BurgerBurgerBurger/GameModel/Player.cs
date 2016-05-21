@@ -73,27 +73,36 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
                 return;
             }
 
+            Arrow newOrUpdatedArror;
+
             // If we haven't placed all our arrows yet, add a new one
             if (this.placedArrowCount < this.arrows.Length)
             {
-                Arrow newArrow = new Arrow(cellCol, cellRow, pointDirection);
-                this.arrows[this.arrowToPlaceIndex] = newArrow;
+                newOrUpdatedArror = new Arrow(cellCol, cellRow, pointDirection);
+                newOrUpdatedArror.Index = this.arrowToPlaceIndex;
+                this.arrows[this.arrowToPlaceIndex] = newOrUpdatedArror;
 
                 this.placedArrowCount++;
 
-                Board.Instance.AddObjectToBoard(newArrow, true, false);
+                Board.Instance.AddObjectToBoard(newOrUpdatedArror, true, false);
             }
             // If we already placed max arrows, update the one that's next in line
             else
             {
-                Arrow arrowToMove = this.arrows[this.arrowToPlaceIndex];
-                int[] previousArrowPosition = new int[] { arrowToMove.CellCol, arrowToMove.CellRow };
+                newOrUpdatedArror = this.arrows[this.arrowToPlaceIndex];
+                newOrUpdatedArror.Index = this.arrowToPlaceIndex;
+                int[] previousArrowPosition = new int[] { newOrUpdatedArror.CellCol, newOrUpdatedArror.CellRow };
 
-                arrowToMove.CellCol = cellCol;
-                arrowToMove.CellRow = cellRow;
-                arrowToMove.PointDirection = pointDirection;
+                newOrUpdatedArror.CellCol = cellCol;
+                newOrUpdatedArror.CellRow = cellRow;
+                newOrUpdatedArror.PointDirection = pointDirection;
 
-                Board.Instance.UpdateObjectOnBoard(previousArrowPosition[0], previousArrowPosition[1], arrowToMove);
+                Board.Instance.UpdateObjectOnBoard(previousArrowPosition[0], previousArrowPosition[1], newOrUpdatedArror);
+            }
+
+            if (this.ArrowPlacementEvent != null)
+            {
+                ArrowPlacementEvent(this, newOrUpdatedArror, null);
             }
 
             this.arrowToPlaceIndex = (this.arrowToPlaceIndex + 1) % this.arrows.Length;

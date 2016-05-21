@@ -91,7 +91,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// </summary>
         private BoardWalls boardWalls;
 
-        private Object lockObject;
+        private Object lockObject = new Object();
 
         #endregion
 
@@ -176,11 +176,11 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             {
                 this.boardObjectMap[boardObject.CellCol, boardObject.CellRow] = boardObject;
             }
-
+            /*
             if (doNotify && this.ObjectAddedToBoardEvent != null)
             {
                 ObjectAddedToBoardEvent(boardObject, null);
-            }
+            }*/
         }
 
         /// <summary>
@@ -208,11 +208,11 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             }
 
             this.AddObjectToBoard(boardObject, false, false);  // TODO: arrows shouldn't throw...need to be careful with what else use update for!
-
+            /*
             if (doNotify && this.ObjectUpdatedOnBoardEvent != null)
             {
                 ObjectUpdatedOnBoardEvent(boardObject, null);
-            }
+            }*/
         }
 
         /// <summary>
@@ -233,11 +233,11 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
                     this.boardObjectMap[cellCol, cellRow] = null;
                 }
             }
-
+            /*
             if (objectToRemove != null && doNotify && this.ObjectRemovedFromBoardEvent != null)
             {
                 ObjectRemovedFromBoardEvent(objectToRemove, null);
-            }
+            }*/
         }
 
         /// <summary>

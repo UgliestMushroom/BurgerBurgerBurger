@@ -12,6 +12,8 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// </summary>
         public Direction PointDirection { get; set; }
 
+        public int Index { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>

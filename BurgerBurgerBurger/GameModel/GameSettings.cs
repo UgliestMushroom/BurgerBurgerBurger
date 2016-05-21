@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
-    static class GameSettings
+    public static class GameSettings
     {
         public static readonly Random RANDOM = new Random();
 
