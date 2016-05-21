@@ -8,6 +8,6 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
     public interface IStaticObject
     {
-        void InteractWithMovingObject(ScoreObject movingObject);
+        void InteractWithMovingObject(MovableObject movingObject);
     }
 }

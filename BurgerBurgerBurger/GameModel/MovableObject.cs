@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
-    public class ScoreObject
+    public class MovableObject
     {
         /// <summary>
-        /// Delegate type for handling events from the ScoreObject.
+        /// Delegate type for handling events from the MovableObject.
         /// </summary>
         /// <param name="movingObject">Object that acted</param>
         /// <param name="moveArgs">Event args</param>
-        public delegate void MoveHandler(ScoreObject movingObject, EventArgs moveArgs);
+        public delegate void MoveHandler(MovableObject movingObject, EventArgs moveArgs);
 
         /// <summary>
-        /// Event for when the ScoreObject moves.
+        /// Event for when the MovableObject moves.
         /// </summary>
         public event MoveHandler MoveEvent;
 
@@ -33,7 +33,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         public int PointValue { set; get; }
 
         /// <summary>
-        /// Direction that the ScoreObject is currently moving in.
+        /// Direction that the MovableObject is currently moving in.
         /// </summary>
         private Direction movingDirection;
         internal Direction MovingDirection
@@ -53,7 +53,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         }
 
         /// <summary>
-        /// Direction the ScoreObject will turn when it hits a wall.
+        /// Direction the MovableObject will turn when it hits a wall.
         /// </summary>
         private Direction turnDirection;
         Direction TurnDirection

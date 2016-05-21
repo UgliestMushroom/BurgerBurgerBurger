@@ -1,22 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
+    /// <summary>
+    /// Static object that is placed in a cell on the Board.  Interacts with ScoreObjects moving across the Board.
+    /// </summary>
     public abstract class BoardObject : IStaticObject
     {
+        /// <summary>
+        /// Cell column on the board this object is placed
+        /// </summary>
         public int CellCol { get; set; }
+
+        /// <summary>
+        /// Cell row on the board this object is placed
+        /// </summary>
         public int CellRow { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="cellCol">Cell column on the board this object is placed</param>
+        /// <param name="cellRow">Cell row on the board this object is placed</param>
         public BoardObject(int cellCol, int cellRow)
         {
             this.CellCol = cellCol;
             this.CellRow = cellRow;
         }
 
-        public abstract void InteractWithMovingObject(ScoreObject movingObject);
+        /// <summary>
+        /// Interact with a moving object that enters this object's Board cell
+        /// </summary>
+        /// <param name="movingObject"></param>
+        public abstract void InteractWithMovingObject(MovableObject movingObject);
     }
 }
