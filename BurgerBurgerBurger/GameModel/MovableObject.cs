@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
@@ -72,35 +68,40 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             }
         }
 
+        /// <summary>
+        /// Move the object across the Board, if possible.  If the location it would move to is out of bounds, of if 
+        /// it would hit a wall, it turns.  If it does move and doesn't turn, it notifies listeners of its updated position.
+        /// </summary>
         public void Move()
         {
             // Calculate proposed X / Y based on Speed and Direction
             int[] proposedMovePoint = CalculateProposedPositionAfterMove();
             
+            // Check if the proposed location is out of bounds
             if (Board.Instance.IsPositionOutOfBounds(proposedMovePoint[0], proposedMovePoint[1]))
             {
                 this.Turn();
                 return;
             }
 
-            // Calculate proposed cell from proposed X / Y
+            // Calculate proposed cell from proposed X / Y and check walls in the way
             int[] proposedMoveCell = new int[] { this.CurrentCellCol, this.CurrentCellRow };
             try
             {
-                proposedMoveCell = Board.Instance.CalculateCellFromPosition(proposedMovePoint[0], proposedMovePoint[1]);
-            } catch (WouldHitWallException e)
+                proposedMoveCell = Board.Instance.GetCellIfMovedTo(this, proposedMovePoint[0], proposedMovePoint[1]);
+            } catch (WouldHitWallException)
             {
                 this.Turn();
                 return;
             }
             
-            // Actually move and notify
+            // The move is valid, so update the position
             this.X = proposedMovePoint[0];
             this.Y = proposedMovePoint[1];
             this.CurrentCellCol = proposedMoveCell[0];
             this.CurrentCellRow = proposedMoveCell[1];
 
-            // Notify anyone that I've moved.
+            // Notify anyone that I've moved
             if (this.MoveEvent != null)
             {
                 MoveEvent(this, null);
@@ -108,9 +109,36 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         }
 
         /// <summary>
+        /// Calculate the X and Y location if this object were to move in it's current direction.
+        /// </summary>
+        /// <returns>X,Y coordinates where the object, as is, would move to</returns>
+        private int[] CalculateProposedPositionAfterMove()
+        {
+            int proposedX = this.X;
+            int proposedY = this.Y;
+
+            int movementValue = (int)Math.Ceiling(GameSettings.PxPerMove * this.Speed);
+            if (this.MovingDirection == Direction.Left || this.MovingDirection == Direction.Up)
+            {
+                movementValue = -1 * movementValue;
+            }
+
+            if (this.MovingDirection == Direction.Left || this.MovingDirection == Direction.Right)
+            {
+                proposedX += movementValue;
+            }
+            else
+            {
+                proposedY += movementValue;
+            }
+
+            return new int[] { proposedX, proposedY };
+        }
+
+        /// <summary>
         /// Turn to modify the direction this object is now moving.
         /// </summary>
-        internal void Turn()
+        private void Turn()
         {
             switch (this.TurnDirection)
             {
@@ -190,31 +218,6 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
             this.MovingDirection = newDirection;
         }
-
-        private int[] CalculateProposedPositionAfterMove()
-        {
-            int proposedX = this.X;
-            int proposedY = this.Y;
-            
-            int movementValue = (int)Math.Ceiling(GameSettings.PxPerMove * this.Speed);
-            if (this.MovingDirection == Direction.Left || this.MovingDirection == Direction.Up)
-            {
-                movementValue = -1 * movementValue;
-            }
-
-            if (this.MovingDirection == Direction.Left || this.MovingDirection == Direction.Right)
-            {
-                proposedX += movementValue;
-            }
-            else
-            {
-                proposedY += movementValue;
-            }
-
-            return new int[] { proposedX, proposedY };
-        }
-
-
 
         public void Kill()
         {

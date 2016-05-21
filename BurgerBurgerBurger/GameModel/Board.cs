@@ -168,6 +168,37 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         #region Board Interaction
 
         /// <summary>
+        /// Check if a given X and Y position is out of bounds for the Board
+        /// </summary>
+        /// <param name="x">X coordinate to check</param>
+        /// <param name="y">Y coordinate to check</param>
+        /// <returns>True if the position is out of bounds, false otherwise</returns>
+        public bool IsPositionOutOfBounds(int x, int y)
+        {
+            return (x < this.GameBoardStartX || y < this.GameBoardStartY || x > this.GameBoardEndX || y > this.GameBoardEndY);
+        }
+
+        /// <summary>
+        /// Get the cell coordiantes if a given object moved to a given X and Y location from their current location.
+        /// If there's a wall in the way, throw <see cref="WouldHitWallException"/>.
+        /// </summary>
+        /// <param name="movableObject">Object that is moving</param>
+        /// <param name="xToMoveTo">X coordinate it would move to</param>
+        /// <param name="yToMoveTo">Y coordinate it would move to</param>
+        /// <returns>Cell location if the move is allowed; otherwise throws</returns>
+        public int[] GetCellIfMovedTo(MovableObject movableObject, int xToMoveTo, int yToMoveTo)
+        {
+            int[] newCell = CalculateCellFromPosition(xToMoveTo, yToMoveTo);
+
+            if (this.boardWalls.WouldHitWall(movableObject.CurrentCellCol, movableObject.CurrentCellRow, newCell[0], newCell[1]))
+            {
+                throw new WouldHitWallException();
+            }
+
+            return newCell;
+        }
+
+        /// <summary>
         /// Event that handles when a MovableObject moves across the Board.
         /// </summary>
         /// <param name="movingObject">Object moving across the Board.</param>
@@ -185,18 +216,13 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
         #region Board Position Calculation
 
-        public bool IsPositionOutOfBounds(int x, int y)
-        {
-            return (x < this.GameBoardStartX || y < this.GameBoardStartY || x > this.GameBoardEndX || y > this.GameBoardEndY);
-        }
-
         /// <summary>
         /// Convert absolute coordinates (like a click) to cells on a the game board.
         /// </summary>
         /// <param name="absoluteXCoord">Absolute X coordinate</param>
         /// <param name="absoluteYCoord">Absolute Y coordinate</param>
         /// <returns>An int array with [cell column, cell row]</returns>
-        public int[] CalculateCellFromPosition(int absoluteXCoord, int absoluteYCoord)
+        private int[] CalculateCellFromPosition(int absoluteXCoord, int absoluteYCoord)
         {
             return new int[] { ConvertAbsoluteXToCellCol(absoluteXCoord), ConvertAbsoluteYToCellRow(absoluteYCoord) };
         }
