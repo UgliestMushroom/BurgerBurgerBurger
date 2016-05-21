@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
-    class WouldHitWallException : Exception
+    /// <summary>
+    /// Exception for when MovableObjects attempt to move but would hit a Board wall instead.
+    /// </summary>
+    public class WouldHitWallException : Exception
     {
     }
 }

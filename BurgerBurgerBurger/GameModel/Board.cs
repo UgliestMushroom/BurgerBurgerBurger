@@ -11,6 +11,29 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
     /// </summary>
     public class Board
     {
+        /// <summary>
+        /// Delegate type for handling events from the BoardObject.
+        /// </summary>
+        /// <param name="boardObject">Object that acted</param>
+        /// <param name="eventArgs">Event args</param>
+        public delegate void BoardObjectHandler(BoardObject boardObject, EventArgs eventArgs);
+
+        /// <summary>
+        /// Event for when the BoardObject is removed from the Board.
+        /// </summary>
+        public event BoardObjectHandler ObjectAddedToBoardEvent;
+
+        /// <summary>
+        /// Event for when the BoardObject is updated on the Board.
+        /// </summary>
+        public event BoardObjectHandler ObjectUpdatedOnBoardEvent;
+
+        /// <summary>
+        /// Event for when the BoardObject is removed from the Board.
+        /// </summary>
+        public event BoardObjectHandler ObjectRemovedFromBoardEvent;
+
+
         #region Board Properties
 
         /// <summary>
@@ -68,6 +91,8 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// </summary>
         private BoardWalls boardWalls;
 
+        private Object lockObject;
+
         #endregion
 
         #region Board Setup
@@ -124,7 +149,86 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
             this.boardObjectMap = new BoardObject[this.NumBoardCols, this.NumBoardRows];
 
-            this.boardWalls = new BoardWalls(this.NumBoardCols. this.NumBoardRows);
+            this.boardWalls = new BoardWalls(this.NumBoardCols, this.NumBoardRows);
+        }
+
+        /// <summary>
+        /// Add an object to the Board.
+        /// </summary>
+        /// <param name="boardObject">Object to place on the Board</param>
+        /// <param name="doNotify">True if this call should notify listeners of ObjectAddedToBoardEvent</param>
+        /// <param name="throwIfOccupied">True to throw if an object is already at that cell; false to ignore</param>
+        public void AddObjectToBoard(BoardObject boardObject, bool doNotify = true, bool throwIfOccupied = true)
+        {
+            if (IsCellOccupied(boardObject.CellCol, boardObject.CellRow))
+            {
+                if (throwIfOccupied)
+                {
+                    throw new ArgumentException(String.Format("Item is already present on the board at [{0},{1}].", boardObject.CellCol, boardObject.CellRow));
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            lock (this.lockObject)
+            {
+                this.boardObjectMap[boardObject.CellCol, boardObject.CellRow] = boardObject;
+            }
+
+            if (doNotify && this.ObjectAddedToBoardEvent != null)
+            {
+                ObjectAddedToBoardEvent(boardObject, null);
+            }
+        }
+        
+        public void UpdateObjectOnBoard(int cellCol, int cellRow, BoardObject boardObject, bool doNotify = true)
+        {
+            if (!IsCellOccupied(cellCol, cellRow))
+            {
+                throw new ArgumentException("Cannot update cell [{0},{1}] because nothing is there yet!");
+            }
+
+            // If the "update" is really a "move", then the board removes then re-adds it
+            // If it's just changing non-positional properties in the same cell, we just overwrite it
+            // Either way, we present it to the world as an update, not a remove+add or just add
+            if (boardObject.CellCol != cellCol || boardObject.CellRow != cellRow)
+            {
+                this.RemoveObjectFromBoard(cellCol, cellRow, false);
+            }
+
+            this.AddObjectToBoard(boardObject, false, false);  // TODO: arrows shouldn't throw...need to be careful with what else use update for!
+
+            if (doNotify && this.ObjectUpdatedOnBoardEvent != null)
+            {
+                ObjectUpdatedOnBoardEvent(boardObject, null);
+            }
+        }
+
+        /// <summary>
+        /// Remove an object from the Board map.  If nothing is at the given cell, it continues silently.
+        /// </summary>
+        /// <param name="cellCol">Cell column to remove object from</param>
+        /// <param name="cellRow">Cell row to remove object from</param>
+        /// <param name="doNotify">True if this call should notify listeners of ObjectRemovedFromBoardEvent</param>
+        public void RemoveObjectFromBoard(int cellCol, int cellRow, bool doNotify = true)
+        {
+            BoardObject objectToRemove;
+
+            lock (this.lockObject)
+            {
+                objectToRemove = this.boardObjectMap[cellCol, cellRow];
+                if (objectToRemove != null)
+                {
+                    this.boardObjectMap[cellCol, cellRow] = null;
+                }
+            }
+
+            if (objectToRemove != null && doNotify && this.ObjectRemovedFromBoardEvent != null)
+            {
+                ObjectRemovedFromBoardEvent(objectToRemove, null);
+            }
         }
 
         public void AddWallToBoard(int cell1Col, int cell1Row, int cell2Col, int cell2Row)
@@ -134,32 +238,30 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
         public void AddHoleToBoard(int cellCol, int cellRow)
         {
-            VerifyCellUnoccupied(cellCol, cellRow);
+            this.AddObjectToBoard(new Hole(cellCol, cellRow));
         }
 
         public void AddBaseToBoard(int cellCol, int cellRow /* owner player */)
         {
-            VerifyCellUnoccupied(cellCol, cellRow);
 
         }
 
         public void AddSpawnerToBoard(int cellCol, int cellRow /* spawn direction */)
         {
-            VerifyCellUnoccupied(cellCol, cellRow);
 
         }
 
         /// <summary>
-        /// Verify that the cell at a given location does not already have a BoardObject present.
-        /// If another object is present, this throws <see cref="ArgumentException"/>
+        /// Check if the cell at a given location already has a BoardObject present.
         /// </summary>
         /// <param name="cellCol">Board cell column to check</param>
         /// <param name="cellRow">Board cell row to check</param>
-        private void VerifyCellUnoccupied(int cellCol, int cellRow)
+        /// <returns>True if the cell is empty; false otherwise</returns>
+        public bool IsCellOccupied(int cellCol, int cellRow)
         {
-            if (this.boardObjectMap[cellCol, cellRow] != null)
+            lock (this.lockObject)
             {
-                throw new ArgumentException(String.Format("Cannot place item at [{0},{1}]; another item is already there.", cellCol, cellRow));
+                return (this.boardObjectMap[cellCol, cellRow] != null);
             }
         }
 
@@ -203,12 +305,15 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// </summary>
         /// <param name="movingObject">Object moving across the Board.</param>
         /// <param name="moveArgs">Event arguments</param>
-        public void HandleScoreObjectOnBoard(MovableObject movingObject, EventArgs moveArgs)
+        public void HandleMovingObjectOnBoard(MovableObject movingObject, EventArgs moveArgs)
         {
-            BoardObject objectAtCell = this.boardObjectMap[movingObject.CurrentCellCol, movingObject.CurrentCellRow];
-            if (objectAtCell != null)
+            lock (this.lockObject)
             {
-                objectAtCell.InteractWithMovingObject(movingObject);
+                BoardObject objectAtCell = this.boardObjectMap[movingObject.CurrentCellCol, movingObject.CurrentCellRow];
+                if (objectAtCell != null)
+                {
+                    objectAtCell.InteractWithMovingObject(movingObject);
+                }
             }
         }
 
