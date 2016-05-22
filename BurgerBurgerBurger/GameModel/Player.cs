@@ -84,7 +84,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
                 this.placedArrowCount++;
 
-                Board.Instance.AddObjectToBoard(newOrUpdatedArror, true, false);
+                Board.Instance.AddObjectToBoard(newOrUpdatedArror, true);
             }
             // If we already placed max arrows, update the one that's next in line
             else

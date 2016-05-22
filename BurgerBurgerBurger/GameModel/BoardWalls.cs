@@ -52,8 +52,8 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             }
 
             // Save the wall info on both cells, but opposite directions
-            boardWallMap[cell1Col, cell1Row] &= CalculatePositionOfWall(cell1Col, cell1Row, cell2Col, cell2Row);
-            boardWallMap[cell2Col, cell2Row] &= CalculatePositionOfWall(cell2Col, cell2Row, cell1Col, cell1Row);
+            boardWallMap[cell1Col, cell1Row] &= BoardWalls.CalculatePositionOfWall(cell1Col, cell1Row, cell2Col, cell2Row);
+            boardWallMap[cell2Col, cell2Row] &= BoardWalls.CalculatePositionOfWall(cell2Col, cell2Row, cell1Col, cell1Row);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             VerifyCellPositionParams(fromCellCol, fromCellRow);
             VerifyCellPositionParams(toCellCol, toCellRow);
 
-            WallPositionFlags expectedDirection = CalculatePositionOfWall(fromCellCol, fromCellRow, toCellCol, toCellRow);
+            WallPositionFlags expectedDirection = BoardWalls.CalculatePositionOfWall(fromCellCol, fromCellRow, toCellCol, toCellRow);
             WallPositionFlags wallsForCell = boardWallMap[fromCellCol, fromCellRow];
 
             return wallsForCell.HasFlag(expectedDirection);
@@ -83,28 +83,34 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// <param name="toCellCol">Column of the 'to cell' where the wall would be placed</param>
         /// <param name="toCellRow">Row of the 'to cell' where the wall would be placed</param>
         /// <returns>Position of the wall in the 'from cell'</returns>
-        private WallPositionFlags CalculatePositionOfWall(int fromCellCol, int fromCellRow, int toCellCol, int toCellRow)
+        public static WallPositionFlags CalculatePositionOfWall(int fromCellCol, int fromCellRow, int toCellCol, int toCellRow)
         {
-            if (fromCellCol < toCellCol)
+            // Motion on the X axis
+            if (fromCellRow == toCellRow)
             {
-                return WallPositionFlags.Up;
+                if (fromCellCol < toCellCol && fromCellCol == toCellCol - 1)
+                {
+                    return WallPositionFlags.Right;
+                }
+                else if (fromCellCol > toCellCol && fromCellCol == toCellCol + 1)
+                {
+                    return WallPositionFlags.Left;
+                }
             }
-            else if (fromCellCol > toCellCol)
-            {
-                return WallPositionFlags.Down;
+            // Motion on the Y axis
+            else if (fromCellCol == toCellCol)
+            { 
+                if (fromCellRow < toCellRow && fromCellRow == toCellRow - 1)
+                {
+                    return WallPositionFlags.Down;
+                }
+                else if (fromCellRow > toCellRow && fromCellRow == toCellRow + 1)
+                {
+                    return WallPositionFlags.Up;
+                }
             }
-            else if (fromCellRow < toCellRow)
-            {
-                return WallPositionFlags.Right;
-            }
-            else if (fromCellRow > toCellRow)
-            {
-                return WallPositionFlags.Left;
-            }
-            else
-            {
-                throw new ArgumentException("Cannot calculate wall direction between two cells.  Are the two cells equal?");
-            }
+
+            throw new ArgumentException("Cannot calculate wall direction between two cells.  Cells must be adjacent to have a wall between them.");
         }
 
         /// <summary>

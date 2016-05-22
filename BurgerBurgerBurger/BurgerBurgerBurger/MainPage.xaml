@@ -8,7 +8,7 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid x:Name="MainGrid" HorizontalAlignment="Left" Height="360" VerticalAlignment="Top" Width="360" Margin="-10,-25,0,0">
+        <Grid x:Name="MainGrid" HorizontalAlignment="Left" Height="360" VerticalAlignment="Top" Width="360" Margin="0,0,0,0">
             <Rectangle x:Name="Rec_0_0" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="0,0,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
             <Rectangle x:Name="Rec_1_0" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="60,0,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
             <Rectangle x:Name="Rec_2_0" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="120,0,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
@@ -50,13 +50,31 @@
             <Rectangle x:Name="Rec_3_5" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="180,300,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
             <Rectangle x:Name="Rec_4_5" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="240,300,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
             <Rectangle x:Name="Rec_5_5" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="300,300,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            
-            <Ellipse x:Name="Player1_Arrow1" Fill="#FFFF7979" HorizontalAlignment="Left" Height="50" Margin="0,0,0,0" VerticalAlignment="Top" Width="50" Visibility="Collapsed"/>
-            <Ellipse x:Name="Player1_Arrow2" Fill="#FFFF7979" HorizontalAlignment="Left" Height="50" Margin="0,0,0,0" VerticalAlignment="Top" Width="50" Visibility="Collapsed"/>
-            <Ellipse x:Name="Player1_Arrow3" Fill="#FFFF7979" HorizontalAlignment="Left" Height="50" Margin="0,0,0,0" VerticalAlignment="Top" Width="50" Visibility="Collapsed"/>
+
+            <Image x:Name="Player1_Arrow1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="30" Margin="0,0,0,0"  Visibility="Collapsed"/>
+            <Image x:Name="Player1_Arrow2" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="30" Margin="0,0,0,0"  Visibility="Collapsed"/>
+            <Image x:Name="Player1_Arrow3" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="30" Margin="0,0,0,0"  Visibility="Collapsed"/>
+
+            <Image x:Name="Player1_Base" HorizontalAlignment="Left" VerticalAlignment="Top" Height="50" Width="50" Margin="0,0,0,0"  Visibility="Collapsed"/>
+
+            <Image x:Name="Hole1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="60" Margin="0,0,0,0"  Visibility="Collapsed"/>
+            <Image x:Name="Hole2" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="60" Margin="0,0,0,0"  Visibility="Collapsed"/>
+            <Image x:Name="Hole3" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="60" Margin="0,0,0,0"  Visibility="Collapsed"/>
+            <Image x:Name="Hole4" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="60" Margin="0,0,0,0"  Visibility="Collapsed"/>
+            <Image x:Name="Hole5" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="60" Margin="0,0,0,0"  Visibility="Collapsed"/>
+            <Image x:Name="Hole6" HorizontalAlignment="Left" VerticalAlignment="Top" Height="60" Width="60" Margin="0,0,0,0"  Visibility="Collapsed"/>
 
         </Grid>
+
+        <Grid x:Name="WallPanel">
+            <Grid x:Name="DynamicHorizWallPanel">
+
+            </Grid>
+            <Grid x:Name="DynamicVertWallPanel">
+
+            </Grid>
+        </Grid>
+        
         <Button x:Name="NewButtonClick" Content="Start New Game" HorizontalAlignment="Left" Margin="10,389,0,0" VerticalAlignment="Top" Click="NewGameButton_Click"/>
-        <TextBlock x:Name="ClickTargetTestText" HorizontalAlignment="Left" Margin="166,395,0,0" TextWrapping="Wrap" Text="Last click was on:" VerticalAlignment="Top"/>
     </Grid>
 </Page>

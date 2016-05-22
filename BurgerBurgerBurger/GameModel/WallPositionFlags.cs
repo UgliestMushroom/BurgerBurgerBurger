@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
     [Flags]
-    enum WallPositionFlags
+    public enum WallPositionFlags
     {
         Up = 0x1,
         Down = 0x2,

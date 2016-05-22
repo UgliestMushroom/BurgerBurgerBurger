@@ -19,20 +19,28 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         public delegate void BoardObjectHandler(BoardObject boardObject, EventArgs eventArgs);
 
         /// <summary>
-        /// Event for when the BoardObject is removed from the Board.
+        /// Event for when a Base is added to the Board.
         /// </summary>
-        public event BoardObjectHandler ObjectAddedToBoardEvent;
+        public event BoardObjectHandler BaseAddedToBoardEvent;
 
         /// <summary>
-        /// Event for when the BoardObject is updated on the Board.
+        /// Event for when a Hole is added to the Board.
         /// </summary>
-        public event BoardObjectHandler ObjectUpdatedOnBoardEvent;
+        public event BoardObjectHandler HoleAddedToBoardEvent;
+        
+        /// <summary>
+        /// Delegate type for handling events about walls.
+        /// </summary>
+        /// <param name="cellCol">Column for one of the cells the wall borders</param>
+        /// <param name="cellRow">Row for one of the cells the wall borders</param>
+        /// <param name="wallPosition">Position the wall is relative to the given cell</param>
+        /// <param name="eventArgs">Event args</param>
+        public delegate void WallHandler(int cellCol, int cellRow, WallPositionFlags wallPosition, EventArgs eventArgs);
 
         /// <summary>
-        /// Event for when the BoardObject is removed from the Board.
+        /// Event for when a wall is added to the Board.
         /// </summary>
-        public event BoardObjectHandler ObjectRemovedFromBoardEvent;
-
+        public event WallHandler WallAddedToBoardEvent;
 
         #region Board Properties
 
@@ -156,9 +164,8 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// Add an object to the Board.
         /// </summary>
         /// <param name="boardObject">Object to place on the Board</param>
-        /// <param name="doNotify">True if this call should notify listeners of ObjectAddedToBoardEvent</param>
         /// <param name="throwIfOccupied">True to throw if an object is already at that cell; false to ignore</param>
-        public void AddObjectToBoard(BoardObject boardObject, bool doNotify = true, bool throwIfOccupied = true)
+        public void AddObjectToBoard(BoardObject boardObject, bool throwIfOccupied = true)
         {
             if (IsCellOccupied(boardObject.CellCol, boardObject.CellRow))
             {
@@ -176,11 +183,6 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             {
                 this.boardObjectMap[boardObject.CellCol, boardObject.CellRow] = boardObject;
             }
-            /*
-            if (doNotify && this.ObjectAddedToBoardEvent != null)
-            {
-                ObjectAddedToBoardEvent(boardObject, null);
-            }*/
         }
 
         /// <summary>
@@ -191,8 +193,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// <param name="cellCol">Cell column where the object is currently placed</param>
         /// <param name="cellRow">Cell row where the object is currently placed</param>
         /// <param name="boardObject">Object to update (update the col/row fields of this param to move it on the board)</param>
-        /// <param name="doNotify">True if this call should notify listeners of ObjectUpdatedOnBoardEvent</param>
-        public void UpdateObjectOnBoard(int cellCol, int cellRow, BoardObject boardObject, bool doNotify = true)
+        public void UpdateObjectOnBoard(int cellCol, int cellRow, BoardObject boardObject)
         {
             if (!IsCellOccupied(cellCol, cellRow))
             {
@@ -204,15 +205,10 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             // Either way, we present it to the world as an update, not a remove+add or just add
             if (boardObject.CellCol != cellCol || boardObject.CellRow != cellRow)
             {
-                this.RemoveObjectFromBoard(cellCol, cellRow, false);
+                this.RemoveObjectFromBoard(cellCol, cellRow);
             }
 
-            this.AddObjectToBoard(boardObject, false, false);  // TODO: arrows shouldn't throw...need to be careful with what else use update for!
-            /*
-            if (doNotify && this.ObjectUpdatedOnBoardEvent != null)
-            {
-                ObjectUpdatedOnBoardEvent(boardObject, null);
-            }*/
+            this.AddObjectToBoard(boardObject, false);  // TODO: arrows shouldn't throw...need to be careful with what else use update for!
         }
 
         /// <summary>
@@ -220,8 +216,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// </summary>
         /// <param name="cellCol">Cell column to remove object from</param>
         /// <param name="cellRow">Cell row to remove object from</param>
-        /// <param name="doNotify">True if this call should notify listeners of ObjectRemovedFromBoardEvent</param>
-        public void RemoveObjectFromBoard(int cellCol, int cellRow, bool doNotify = true)
+        public void RemoveObjectFromBoard(int cellCol, int cellRow)
         {
             BoardObject objectToRemove;
 
@@ -233,11 +228,32 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
                     this.boardObjectMap[cellCol, cellRow] = null;
                 }
             }
-            /*
-            if (objectToRemove != null && doNotify && this.ObjectRemovedFromBoardEvent != null)
+        }
+
+        /// <summary>
+        /// Add a Base object to the Board.
+        /// </summary>
+        /// <param name="cellCol">Cell column where the Base will be placed</param>
+        /// <param name="cellRow">Cell row where the Base will be placed</param>
+        /// <param name="owner">Player who owns this base</param>
+        public void AddBaseToBoard(int cellCol, int cellRow, Player owner)
+        {
+            Base playerBase = new Base(cellCol, cellRow, owner);
+            this.AddObjectToBoard(playerBase);
+
+            if (this.BaseAddedToBoardEvent != null)
             {
-                ObjectRemovedFromBoardEvent(objectToRemove, null);
-            }*/
+                this.BaseAddedToBoardEvent(playerBase, null);
+            }
+        }
+        
+        /// <summary>
+        /// Add a Spawner object to the Board.
+        /// </summary>
+        /// <param name="cellCol">Cell column where the Spawner will be placed</param>
+        /// <param name="cellRow">Cell row where the Spawner will be placed</param>
+        public void AddSpawnerToBoard(int cellCol, int cellRow /* spawn direction */)
+        {
         }
 
         /// <summary>
@@ -250,6 +266,11 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         public void AddWallToBoard(int cell1Col, int cell1Row, int cell2Col, int cell2Row)
         {
             this.boardWalls.AddWall(cell1Col, cell1Row, cell2Col, cell2Row);
+
+            if (this.WallAddedToBoardEvent != null)
+            {
+                this.WallAddedToBoardEvent(cell1Col, cell1Row, BoardWalls.CalculatePositionOfWall(cell1Col, cell1Row, cell2Col, cell2Row), null);
+            }
         }
 
         /// <summary>
@@ -259,27 +280,13 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// <param name="cellRow">Cell row where the Hole will be placed</param>
         public void AddHoleToBoard(int cellCol, int cellRow)
         {
-            this.AddObjectToBoard(new Hole(cellCol, cellRow));
-        }
+            Hole hole = new Hole(cellCol, cellRow);
+            this.AddObjectToBoard(hole);
 
-        /// <summary>
-        /// Add a Base object to the Board.
-        /// </summary>
-        /// <param name="cellCol">Cell column where the Base will be placed</param>
-        /// <param name="cellRow">Cell row where the Base will be placed</param>
-        /// <param name="owner">Player who owns this base</param>
-        public void AddBaseToBoard(int cellCol, int cellRow, Player owner)
-        {
-            this.AddObjectToBoard(new Base(cellCol, cellRow, owner));
-        }
-
-        /// <summary>
-        /// Add a Spawner object to the Board.
-        /// </summary>
-        /// <param name="cellCol">Cell column where the Spawner will be placed</param>
-        /// <param name="cellRow">Cell row where the Spawner will be placed</param>
-        public void AddSpawnerToBoard(int cellCol, int cellRow /* spawn direction */)
-        {
+            if (this.HoleAddedToBoardEvent != null)
+            {
+                this.HoleAddedToBoardEvent(hole, null);
+            }
         }
 
         /// <summary>

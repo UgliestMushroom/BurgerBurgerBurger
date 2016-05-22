@@ -110,6 +110,14 @@
     <None Include="BurgerBurgerBurger_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\arrow_blue_down.png" />
+    <Content Include="Assets\arrow_blue_left.png" />
+    <Content Include="Assets\arrow_blue_right.png" />
+    <Content Include="Assets\arrow_blue_up.png" />
+    <Content Include="Assets\base_blue.png" />
+    <Content Include="Assets\hole.png" />
+    <Content Include="Assets\wall_horiz.png" />
+    <Content Include="Assets\wall_vert.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

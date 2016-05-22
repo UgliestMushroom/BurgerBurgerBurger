@@ -8,7 +8,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
     /// </summary>
     public class Base : BoardObject
     {
-        private Player Player { get; set; }
+        public Player Player { get; private set; }
 
         /// <summary>
         /// Constructor
