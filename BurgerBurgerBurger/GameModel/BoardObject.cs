@@ -8,20 +8,20 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
     public abstract class BoardObject
     {
         /// <summary>
-        /// Cell column on the board this object is placed
+        /// Cell column on the Board this object is placed
         /// </summary>
         public int CellCol { get; set; }
 
         /// <summary>
-        /// Cell row on the board this object is placed
+        /// Cell row on the Board this object is placed
         /// </summary>
         public int CellRow { get; set; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="cellCol">Cell column on the board this object is placed</param>
-        /// <param name="cellRow">Cell row on the board this object is placed</param>
+        /// <param name="cellCol">Cell column on the Board this object is placed</param>
+        /// <param name="cellRow">Cell row on the Board this object is placed</param>
         public BoardObject(int cellCol, int cellRow)
         {
             this.CellCol = cellCol;

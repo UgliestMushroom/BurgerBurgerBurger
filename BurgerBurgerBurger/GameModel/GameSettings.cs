@@ -6,18 +6,69 @@ using System.Threading.Tasks;
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
+    /// <summary>
+    /// GameSettings contains all rule and scoring values used in the game.
+    /// </summary>
     public static class GameSettings
     {
+        /// <summary>
+        /// Random number generator used for all randomness.
+        /// </summary>
         public static readonly Random RANDOM = new Random();
 
-        public const int DEFAULT_MAX_ARROWS_PER_PLAYER = 3;
-        public static int MaxArrowsPerPlayer { get; set; }
-        /*
-        public const int DEFAULT_MOVE_DELAY_MS = 250;
-        public static int MoveDelayMs { get; set; }
+        #region Properties for Scoring
 
-        public const double DEFAULT_CELLS_PER_MOVE = 0.75;
-        private static double cellsPerMove;
+        /// <summary>
+        /// Values for the normal MovableObject score.
+        /// </summary>
+        public const int DEFAULT_OBJECT_SCORE = 1;
+        private static int objectScore = DEFAULT_OBJECT_SCORE;
+        public static int ObjectScore
+        {
+            get
+            {
+                return GameSettings.objectScore;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Object score cannot be negative.");
+                }
+                GameSettings.objectScore = value;
+            }
+        }
+
+        /// <summary>
+        /// Values for the negative MovableObject score.
+        /// </summary>
+        public const int DEFAULT_NEGATIVE_OBJECT_SCORE = -10;
+        private static int negativeObjectScore = DEFAULT_NEGATIVE_OBJECT_SCORE;
+        public static int NegativeObjectScore
+        {
+            get
+            {
+                return GameSettings.negativeObjectScore;
+            }
+            set
+            {
+                if (value > 0)
+                {
+                    throw new ArgumentException("Negative object score cannot be positive.");
+                }
+                GameSettings.negativeObjectScore = value;
+            }
+        }
+
+        #endregion
+
+        #region Movement
+
+        /// <summary>
+        /// Values for the movement distance of MovableObjects.
+        /// </summary>
+        public const double DEFAULT_CELLS_PER_MOVE = 0.5;
+        private static double cellsPerMove = DEFAULT_CELLS_PER_MOVE;
         public static double CellsPerMove
         {
             get
@@ -26,23 +77,14 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             }
             set
             {
-                if (value < 0 || value > 1.0)
+                if (value <= 0)
                 {
-                    throw new ArgumentException("CellsPerMove must be between 0.0 and 1.0");
+                    throw new ArgumentException("Cells per move must be > 0.");
                 }
                 GameSettings.cellsPerMove = value;
             }
         }
-        */
-
-        public static int PxPerMove { get; private set; }
-        /*
-        public const int DEFAULT_SPAWN_DELAY_MS = 5000;
-        public static int SpanwDelayMs { get; set; }
-
-        public const Direction DEFAULT_SPAWNER_DIRECTION = Direction.Right;
-        public static Direction SpawnerDirection { get; set; }
-
+        
         public const Direction DEFAULT_TURN_DIRECTION = Direction.Right;
         private static Direction turnDirection;
         public static Direction TurnDirection
@@ -53,14 +95,70 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             }
             set
             {
-                if (value == Direction.Up || value == Direction.Down)
+                if (value == Direction.Up || value == Direction.Down )
                 {
                     throw new NotSupportedException("GameSettings.TurnDirection cannot be Up or Down.");
                 }
-
                 GameSettings.turnDirection = value;
             }
         }
+
+        /// <summary>
+        /// Values for the max number of Arrows a Player can place.
+        /// </summary>
+        public const int DEFAULT_MAX_ARROWS_PER_PLAYER = 3;
+        private static int maxArrowsPerPlayer = DEFAULT_MAX_ARROWS_PER_PLAYER;
+        public static int MaxArrowsPerPlayer
+        {
+            get
+            {
+                return GameSettings.maxArrowsPerPlayer;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Max arrows per player must be > 0.");
+                }
+                GameSettings.maxArrowsPerPlayer = value;
+            }
+        }
+
+
+
+        /// <summary>
+        /// Values for the probability that a spawner creates a negative MovableObject.
+        /// </summary>
+        public const double DEFAULT_PROBABILITY_OF_NEGATIVE_SPAWN = 0.1;
+        private static double probabilityOfNegativeSpawn = DEFAULT_PROBABILITY_OF_NEGATIVE_SPAWN;
+        public static double ProbabilityOfNegativeSpawn
+        {
+            get
+            {
+                return GameSettings.probabilityOfNegativeSpawn;
+            }
+            set
+            {
+                if (value < 0 || value > 1)
+                {
+                    throw new ArgumentException("Probability of negative spawn must be between 0 and 1.");
+                }
+                GameSettings.probabilityOfNegativeSpawn = value;
+            }
+        }
+
+        public const Direction DEFAULT_SPAWNER_DIRECTION = Direction.Right;
+        public static Direction SpawnerDirection { get; set; }
+
+
+        /*
+        public const int DEFAULT_MOVE_DELAY_MS = 250;
+        public static int MoveDelayMs { get; set; }
+        */
+        /*
+        public const int DEFAULT_SPAWN_DELAY_MS = 5000;
+        public static int SpanwDelayMs { get; set; }
+
 
         public static void InitializeDefaults()
         {

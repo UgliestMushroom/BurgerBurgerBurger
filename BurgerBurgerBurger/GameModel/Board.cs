@@ -45,6 +45,11 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         #region Board Properties
 
         /// <summary>
+        /// Game state, whether it's running or not
+        /// </summary>
+        public bool GameRunning { get; set; }
+
+        /// <summary>
         /// X position where the Board starts on the screen (does not assume start at 0); 0,0 is top left
         /// </summary>
         private int GameBoardStartX { get; set; }
@@ -360,7 +365,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         #region Board Position Calculation
 
         /// <summary>
-        /// Convert absolute coordinates (like a click) to cells on a the game board.
+        /// Convert absolute coordinates (like a click) to cells on a the game Board.
         /// </summary>
         /// <param name="absoluteXCoord">Absolute X coordinate</param>
         /// <param name="absoluteYCoord">Absolute Y coordinate</param>
@@ -419,7 +424,41 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
                 return cellRow;
             }
         }
+        
+        /// <summary>
+        /// Convert cell positions into absolute x and y coordinates.
+        /// </summary>
+        /// <param name="cellCol">Cell col</param>
+        /// <param name="cellRow">Cell row</param>
+        /// <returns>An int array with [absolute x coordinate, absolute y coordinate]</returns>
+        public int[] ConvertCellCoordinatesToAbsolute(int cellCol, int cellRow)
+        {
+            return new int[] { ConvertCellColToXAbsolute(cellCol), ConvertCellRowToYAbsolute(cellRow) };
+        }
 
+        /// <summary>
+        /// Convert a cell column position into an absolute X coordinate.  The coordinate is at the middle of the cell column.
+        /// </summary>
+        /// <param name="cellCol">Cell col</param>
+        /// <returns>Absolute x coordinate at the middle of the cell column</returns>
+        private int ConvertCellColToXAbsolute(int cellCol)
+        {
+            double boardXCoordinate = ((double)cellCol + 0.5) * this.CellWidth;
+            int absoluteXCoordinate = ((int)boardXCoordinate) + this.GameBoardStartX;
+            return absoluteXCoordinate;
+        }
+
+        /// <summary>
+        /// Convert a cell row position into an absolute Y coordinate.  The coordinate is at the middle of the cell row.
+        /// </summary>
+        /// <param name="cellRow">Cell row</param>
+        /// <returns>Absolute y coordinate at the middle of the cell row</returns>
+        private int ConvertCellRowToYAbsolute(int cellRow)
+        {
+            double boardYCoordinate = ((double)cellRow + 0.5) * this.CellHeight;
+            int absoluteYCoordinate = ((int)boardYCoordinate) + this.GameBoardStartY;
+            return absoluteYCoordinate;
+        }
         #endregion
     }
 }

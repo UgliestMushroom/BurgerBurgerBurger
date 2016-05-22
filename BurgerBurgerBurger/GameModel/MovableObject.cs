@@ -9,27 +9,67 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// </summary>
         /// <param name="movingObject">Object that acted</param>
         /// <param name="moveArgs">Event args</param>
-        public delegate void MoveHandler(MovableObject movingObject, EventArgs moveArgs);
+        public delegate void MovableObjectHandler(MovableObject movingObject, EventArgs moveArgs);
 
         /// <summary>
         /// Event for when the MovableObject moves.
         /// </summary>
-        public event MoveHandler MoveEvent;
+        public event MovableObjectHandler MoveEvent;
 
-        private int X { get; set; }
-        private int Y { get; set; }
+        /// <summary>
+        /// Event for when the MovableObject turns.
+        /// </summary>
+        public event MovableObjectHandler TurnEvent;
 
+        /// <summary>
+        /// Event for when the MovableObject dies.
+        /// </summary>
+        public event MovableObjectHandler KillEvent;
+
+        #region Properties
+
+        /// <summary>
+        /// Cell column on the Board this object is is placed
+        /// </summary>
         internal int CurrentCellCol { get; set; }
+
+        /// <summary>
+        /// Cell row on the Board this object is is placed
+        /// </summary>
         internal int CurrentCellRow { get; set; }
 
-        public const float DEFAULT_SPEED = 1f;
-        public float Speed { set; get; }
+        /// <summary>
+        /// Absolute X coordinate on the UI where this object is placed
+        /// </summary>
+        private int X { get; set; }
 
-        public const int DEFAULT_POINT_VALUE = 1;
+        /// <summary>
+        /// Absolute Y coordinate on the UI where this object is placed
+        /// </summary>
+        private int Y { get; set; }
+
+        /// <summary>
+        /// Point value this object gives to a Player if it reaches the Player's Base
+        /// </summary>
         public int PointValue { set; get; }
 
         /// <summary>
-        /// Direction that the MovableObject is currently moving in.
+        /// Number of cells this object moves on each call to Move
+        /// </summary>
+        public double CellsPerMove { set; get; }
+
+        /// <summary>
+        /// Number of pixels this object moves when moving on the X axis
+        /// </summary>
+        private int XPxPerMove { get; set; }
+
+        /// <summary>
+        /// Number of pixels this object moves when moving on the Y axis
+        /// </summary>
+        private int YPxPerMove { get; set; }
+
+        /// <summary>
+        /// Direction that the MovableObject is currently moving in
         /// </summary>
         private Direction movingDirection;
         internal Direction MovingDirection
@@ -49,7 +89,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         }
 
         /// <summary>
-        /// Direction the MovableObject will turn when it hits a wall.
+        /// Direction the MovableObject will turn when it hits a wall
         /// </summary>
         private Direction turnDirection;
         Direction TurnDirection
@@ -67,6 +107,36 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
                 this.turnDirection = value;
             }
         }
+
+        #endregion
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="cellCol">Cell column on the Board this object is placed</param>
+        /// <param name="cellRow">Cell row on the Board this object is placed</param>
+        /// <param name="moveDirection">Direction this object will travel when moving</param>
+        /// <param name="turnDirection">Direction this object will turn when turning</param>
+        /// <param name="pointValue">Points this object will give when interacting with a Player's Base</param>
+        /// <param name="cellsPerMove">Distance in cells this object will move on each movement</param>
+        public MovableObject(int cellCol, int cellRow, Direction moveDirection, Direction turnDirection, int pointValue, double cellsPerMove)
+        {
+            this.CurrentCellCol = cellCol;
+            this.CurrentCellRow = cellRow;
+            this.MovingDirection = moveDirection;
+            this.TurnDirection = turnDirection;
+            this.PointValue = pointValue;
+            this.CellsPerMove = cellsPerMove;
+
+            int[] xyCoordinates = Board.Instance.ConvertCellCoordinatesToAbsolute(this.CurrentCellCol, this.CurrentCellRow);
+            this.X = xyCoordinates[0];
+            this.Y = xyCoordinates[1];
+
+            this.XPxPerMove = (int) (this.CellsPerMove * Board.Instance.CellWidth);
+            this.YPxPerMove = (int) (this.CellsPerMove * Board.Instance.CellHeight);
+        }
+
+        #region Movement
 
         /// <summary>
         /// Move the object across the Board, if possible.  If the location it would move to is out of bounds, of if 
@@ -117,19 +187,16 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             int proposedX = this.X;
             int proposedY = this.Y;
 
-            int movementValue = (int)Math.Ceiling(GameSettings.PxPerMove * this.Speed);
-            if (this.MovingDirection == Direction.Left || this.MovingDirection == Direction.Up)
-            {
-                movementValue = -1 * movementValue;
-            }
+            // Moving left and up is reducing the x/y coordinates (respectively); moving right and up increases them
+            int axisFactor = (this.MovingDirection == Direction.Left || this.MovingDirection == Direction.Up) ? -1 : 1;
 
             if (this.MovingDirection == Direction.Left || this.MovingDirection == Direction.Right)
             {
-                proposedX += movementValue;
+                proposedX += axisFactor * this.XPxPerMove;
             }
             else
             {
-                proposedY += movementValue;
+                proposedY += axisFactor * this.YPxPerMove;
             }
 
             return new int[] { proposedX, proposedY };
@@ -138,7 +205,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// <summary>
         /// Turn to modify the direction this object is now moving.
         /// </summary>
-        private void Turn()
+        internal void Turn()
         {
             switch (this.TurnDirection)
             {
@@ -153,6 +220,11 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
                     break;
                 default:
                     throw new NotSupportedException("MovingObject has invalid TurnDirection!");
+            }
+
+            if (this.TurnEvent != null)
+            {
+                this.TurnEvent(this, null);
             }
         }
 
@@ -219,9 +291,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             this.MovingDirection = newDirection;
         }
 
-        public void Kill()
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
+
     }
 }
