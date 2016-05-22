@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
@@ -11,6 +12,9 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
     /// </summary>
     public class Board
     {
+
+        #region Events
+
         /// <summary>
         /// Delegate type for handling events from the BoardObject.
         /// </summary>
@@ -22,6 +26,11 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// Event for when a Base is added to the Board.
         /// </summary>
         public event BoardObjectHandler BaseAddedToBoardEvent;
+
+        /// <summary>
+        /// Event for when a Spawner is added to the Board.
+        /// </summary>
+        public event BoardObjectHandler SpawnerAddedToBoardEvent;
 
         /// <summary>
         /// Event for when a Hole is added to the Board.
@@ -41,6 +50,13 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// Event for when a wall is added to the Board.
         /// </summary>
         public event WallHandler WallAddedToBoardEvent;
+
+        /// <summary>
+        /// Event for when a MovableObject is spawned on the Board.
+        /// </summary>
+        public event MovableObject.MovableObjectHandler ObjectSpawnedHandler;
+
+        #endregion
 
         #region Board Properties
 
@@ -90,11 +106,6 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         public int CellHeight { get; private set; }
 
         /// <summary>
-        /// Game state
-        /// </summary>
-        public bool GameStarted = false;
-
-        /// <summary>
         /// Map of BoardObjects on the Board's grid of cells
         /// </summary>
         private BoardObject[,] boardObjectMap;
@@ -102,7 +113,12 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// <summary>
         /// Object encapsulating all the wall objects on the Board
         /// </summary>
-        private BoardWalls boardWalls;
+        private BoardWalls BoardWalls { get; set; }
+
+        /// <summary>
+        /// List of Spawners on the Board
+        /// </summary>
+        private List<Spawner> Spawners { get; set; }
 
         private Object lockObject = new Object();
 
@@ -162,7 +178,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
             this.boardObjectMap = new BoardObject[this.NumBoardCols, this.NumBoardRows];
 
-            this.boardWalls = new BoardWalls(this.NumBoardCols, this.NumBoardRows);
+            this.BoardWalls = new BoardWalls(this.NumBoardCols, this.NumBoardRows);
         }
 
         /// <summary>
@@ -257,8 +273,18 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// </summary>
         /// <param name="cellCol">Cell column where the Spawner will be placed</param>
         /// <param name="cellRow">Cell row where the Spawner will be placed</param>
-        public void AddSpawnerToBoard(int cellCol, int cellRow /* spawn direction */)
+        /// <param name="spawnDirection">Direction the Spawner will spawn new objects</param>
+        public void AddSpawnerToBoard(int cellCol, int cellRow, Direction spawnDirection = GameSettings.DEFAULT_SPAWNER_DIRECTION)
         {
+            Spawner spawner = new Spawner(cellCol, cellRow, spawnDirection);
+            spawner.ObjectSpawnedHandler += this.ObjectSpawnedHandler;
+            this.AddObjectToBoard(spawner);
+            this.Spawners.Add(spawner);
+
+            if (this.SpawnerAddedToBoardEvent != null)
+            {
+                this.SpawnerAddedToBoardEvent(spawner, null);
+            }
         }
 
         /// <summary>
@@ -270,7 +296,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// <param name="cell2Row">Row of the second cell adjacent to the wall</param>
         public void AddWallToBoard(int cell1Col, int cell1Row, int cell2Col, int cell2Row)
         {
-            this.boardWalls.AddWall(cell1Col, cell1Row, cell2Col, cell2Row);
+            this.BoardWalls.AddWall(cell1Col, cell1Row, cell2Col, cell2Row);
 
             if (this.WallAddedToBoardEvent != null)
             {
@@ -310,6 +336,27 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
         #endregion
 
+        /// <summary>
+        /// Start a new game.
+        /// </summary>
+        /// <param name="dispatch">Dispatcher to run background tasks.</param>
+        public void StartNewGame(CoreDispatcher dispatch)
+        {
+            this.GameRunning = true;
+            foreach(Spawner spawner in this.Spawners)
+            {
+                dispatch.RunAsync(CoreDispatcherPriority.Normal, () => spawner.Start(dispatch));
+            }
+        }
+
+        /// <summary>
+        /// End the current game.
+        /// </summary>
+        public void EndGame()
+        {
+            this.GameRunning = false;
+        }
+
         #region Board Interaction
 
         /// <summary>
@@ -335,7 +382,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         {
             int[] newCell = CalculateCellFromPosition(xToMoveTo, yToMoveTo);
 
-            if (this.boardWalls.WouldHitWall(movableObject.CurrentCellCol, movableObject.CurrentCellRow, newCell[0], newCell[1]))
+            if (this.BoardWalls.WouldHitWall(movableObject.CurrentCellCol, movableObject.CurrentCellRow, newCell[0], newCell[1]))
             {
                 throw new WouldHitWallException();
             }

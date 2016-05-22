@@ -16,7 +16,32 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// </summary>
         public static readonly Random RANDOM = new Random();
 
-        #region Properties for Scoring
+        #region Rules
+
+        /// <summary>
+        /// Values for the max number of Arrows a Player can place.
+        /// </summary>
+        public const int DEFAULT_MAX_ARROWS_PER_PLAYER = 3;
+        private static int maxArrowsPerPlayer = DEFAULT_MAX_ARROWS_PER_PLAYER;
+        public static int MaxArrowsPerPlayer
+        {
+            get
+            {
+                return GameSettings.maxArrowsPerPlayer;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Max arrows per player must be > 0.");
+                }
+                GameSettings.maxArrowsPerPlayer = value;
+            }
+        }
+
+        #endregion
+
+        #region Scoring
 
         /// <summary>
         /// Values for the normal MovableObject score.
@@ -103,28 +128,9 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             }
         }
 
-        /// <summary>
-        /// Values for the max number of Arrows a Player can place.
-        /// </summary>
-        public const int DEFAULT_MAX_ARROWS_PER_PLAYER = 3;
-        private static int maxArrowsPerPlayer = DEFAULT_MAX_ARROWS_PER_PLAYER;
-        public static int MaxArrowsPerPlayer
-        {
-            get
-            {
-                return GameSettings.maxArrowsPerPlayer;
-            }
-            set
-            {
-                if (value < 0)
-                {
-                    throw new ArgumentException("Max arrows per player must be > 0.");
-                }
-                GameSettings.maxArrowsPerPlayer = value;
-            }
-        }
+        #endregion
 
-
+        #region Spawner
 
         /// <summary>
         /// Values for the probability that a spawner creates a negative MovableObject.
@@ -147,19 +153,72 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             }
         }
 
+        /// <summary>
+        /// Values for the direction that the Spawner spawns MovableObjects
+        /// </summary>
         public const Direction DEFAULT_SPAWNER_DIRECTION = Direction.Right;
-        public static Direction SpawnerDirection { get; set; }
+        private static Direction spawnerDirection = DEFAULT_SPAWNER_DIRECTION;
+        public static Direction SpawnerDirection
+        {
+            get
+            {
+                return GameSettings.spawnerDirection;
+            }
+            set
+            {
+                GameSettings.spawnerDirection = value;
+            }
+        }
 
+        #endregion
+
+        #region Timing
+
+        /// <summary>
+        /// Values for the Spawner spawn delay
+        /// </summary>
+        public const int DEFAULT_SPAWN_DELAY_MS = 2000;
+        private static int spawnDelayMs = DEFAULT_SPAWN_DELAY_MS;
+        public static int SpawnDelayMs
+        {
+            get
+            {
+                return GameSettings.spawnDelayMs;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("SpawnDelayMs cannot be negative.");
+                }
+                GameSettings.spawnDelayMs = value;
+            }
+        }
+
+        /// <summary>
+        /// Values for the MoveableObject move delay
+        /// </summary>
+        public const int DEFAULT_MOVE_DELAY_MS = 200;
+        private static int moveDelayMs = DEFAULT_MOVE_DELAY_MS;
+        public static int MoveDelayMs
+        {
+            get
+            {
+                return GameSettings.moveDelayMs;
+            }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("MoveDelayMs cannot be negative.");
+                }
+                GameSettings.moveDelayMs = value;
+            }
+        }
+
+        #endregion
 
         /*
-        public const int DEFAULT_MOVE_DELAY_MS = 250;
-        public static int MoveDelayMs { get; set; }
-        */
-        /*
-        public const int DEFAULT_SPAWN_DELAY_MS = 5000;
-        public static int SpanwDelayMs { get; set; }
-
-
         public static void InitializeDefaults()
         {
             GameSettings.MaxArrowsPerPlayer = GameSettings.DEFAULT_MAX_ARROWS_PER_PLAYER;

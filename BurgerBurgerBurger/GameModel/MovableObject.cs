@@ -110,6 +110,8 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 
         #endregion
 
+        #region Lifecycle
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -135,6 +137,19 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             this.XPxPerMove = (int) (this.CellsPerMove * Board.Instance.CellWidth);
             this.YPxPerMove = (int) (this.CellsPerMove * Board.Instance.CellHeight);
         }
+
+        /// <summary>
+        /// Kill the MovableObject.
+        /// </summary>
+        public void Kill()
+        {
+            if (this.KillEvent != null)
+            {
+                this.KillEvent(this, null);
+            }
+        }
+
+        #endregion
 
         #region Movement
 

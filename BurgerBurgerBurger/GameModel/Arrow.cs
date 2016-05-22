@@ -33,5 +33,7 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         {
             movingObject.MovingDirection = this.PointDirection;
         }
+        
+        internal void Kill() { }
     }
 }

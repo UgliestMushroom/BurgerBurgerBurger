@@ -1,4 +1,5 @@
-﻿using Philhuge.Projects.BurgerBurgerBurger.GameModel;
+﻿using Philhuge.Projects.BurgerBurgerBurger;
+using Philhuge.Projects.BurgerBurgerBurger.GameModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,68 +27,46 @@ namespace BurgerBurgerBurger
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        
         private SolidColorBrush cellHighlightWhenSelected = new SolidColorBrush(Colors.Aquamarine);
         private double cellHighlightThickness = 5.0;
-
-        private Image[] Player1Arrows;
-
         private Player player1;
-
-        private Dictionary<Player, Image> playerBaseMap;
-        private Dictionary<Player, string> playerImageTagMap;
-        private Dictionary<Player, Image[]> playerArrowsMap;
-
-        private Image[] holes;
-        private int holeIndex;
-        private Object holeLock = new Object();
+        private UiBuilder uiBuilder;
 
         public MainPage()
         {
             this.InitializeComponent();
 
-            this.playerBaseMap = new Dictionary<Player, Image>();
-            this.playerImageTagMap = new Dictionary<Player, string>();
-            this.playerArrowsMap = new Dictionary<Player, Image[]>();
-
-            this.holes = new Image[6];
-            this.holes[0] = this.Hole1;
-            this.holes[1] = this.Hole2;
-            this.holes[2] = this.Hole3;
-            this.holes[3] = this.Hole4;
-            this.holes[4] = this.Hole5;
-            this.holes[5] = this.Hole6;
-
+            // Configure the Board and register callbacks for static objects
             Board.ConfigureInstance(0, 0, 360, 360, 6, 6);
             Board.Instance.BaseAddedToBoardEvent += this.Base_AddedToBoardCallback;
             Board.Instance.HoleAddedToBoardEvent += this.Hole_AddedToBoardCallback;
             Board.Instance.WallAddedToBoardEvent += this.Wall_AddedToBoardCallback;
+            
+            // Create the UI Builder object and have it create the grid
+            this.uiBuilder = new UiBuilder();
+            this.uiBuilder.CreateGrid();
 
+            // Add the Players, register callbacks, and inform the UI builder of the player
             player1 = new Player();
             player1.ArrowPlacementEvent += this.Arrow_AddedToBoardCallback;
-            Player1Arrows = new Image[GameSettings.DEFAULT_MAX_ARROWS_PER_PLAYER];
-            Player1Arrows[0] = Player1_Arrow1;
-            Player1Arrows[1] = Player1_Arrow2;
-            Player1Arrows[2] = Player1_Arrow3;
+            this.uiBuilder.AddPlayer(player1, "blue", GameSettings.MaxArrowsPerPlayer);
 
-            this.playerBaseMap.Add(player1, this.Player1_Base);
-            this.playerImageTagMap.Add(player1, "blue");
-            this.playerArrowsMap.Add(player1, Player1Arrows);
-            
-
+            // Set up the Board
+            // Bases
             Board.Instance.AddBaseToBoard(2, 2, player1);
 
-            Board.Instance.AddHoleToBoard(5, 1);
-            
-            // right
-            Board.Instance.AddWallToBoard(0, 0, 1, 0);
-            // down
-            Board.Instance.AddWallToBoard(0, 0, 0, 1);
-            // up 
-            Board.Instance.AddWallToBoard(3, 3, 3, 2);
-            // left
-            Board.Instance.AddWallToBoard(5, 5, 4, 5);
+            // Spawners
 
+            // Walls
+            Board.Instance.AddWallToBoard(0, 0, 1, 0); // right
+            Board.Instance.AddWallToBoard(5, 5, 4, 5); // left
+            Board.Instance.AddWallToBoard(3, 3, 3, 2); // up 
+            Board.Instance.AddWallToBoard(0, 0, 0, 1); // down
+            
+            // Holes
+            Board.Instance.AddHoleToBoard(5, 1);
+
+            // Start the game
         }
 
         #region UI Interaction Handlers
@@ -118,10 +97,7 @@ namespace BurgerBurgerBurger
         /// <param name="e"></param>
         private void NewGameButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (Image arrow in Player1Arrows)
-            {
-                arrow.Visibility = Visibility.Collapsed;
-            }
+
         }
 
         /// <summary>
@@ -159,23 +135,7 @@ namespace BurgerBurgerBurger
         private void Base_AddedToBoardCallback(BoardObject boardObject, EventArgs eventArgs)
         {
             Base baseAdded = boardObject as Base;
-            Image baseUi = this.playerBaseMap[baseAdded.Player];
-
-            baseUi.Margin = new Thickness(baseAdded.CellCol * 60 + 5, baseAdded.CellRow * 60 + 5, 0, 0);
-            baseUi.Source = GetImageForPlayerBase(baseAdded.Player);
-            baseUi.Visibility = Visibility.Visible;
-        }
-
-        /// <summary>
-        /// Get the Image source for a Player's Base.
-        /// </summary>
-        /// <param name="player">Player to get the Base image for</param>
-        /// <returns>ImageSource for the Player's Base image</returns>
-        private ImageSource GetImageForPlayerBase(Player player)
-        {
-            string imageFilename = String.Format("base_{0}.png", this.playerImageTagMap[player]);
-            string imageFilepath = String.Format(@"ms-appx:/Assets/{0}", imageFilename);
-            return new BitmapImage(new Uri(imageFilepath));
+            UiBuilder.AddItemToGrid(this.DynamicBasePanel, this.uiBuilder.CreateBaseImage(baseAdded));
         }
 
         /// <summary>
@@ -186,25 +146,12 @@ namespace BurgerBurgerBurger
         /// <param name="eventArgs">Event args (unused)</param>
         private void Arrow_AddedToBoardCallback(Player player, Arrow arrow, EventArgs eventArgs)
         {
-            Image[] playerArrows = this.playerArrowsMap[player];
-            Image arrowImage = playerArrows[arrow.Index];
-
-            arrowImage.Margin = new Thickness(arrow.CellCol * 60 + 15, arrow.CellRow * 60 + 15, 0, 0);
-            arrowImage.Source = GetImageForPlayerAndDirection(player, arrow.PointDirection);
-            arrowImage.Visibility = Visibility.Visible;
-        }
-
-        /// <summary>
-        /// Get the Iamge source for a Player's arrow facing a given direction.
-        /// </summary>
-        /// <param name="player">Player who owns the arrow</param>
-        /// <param name="direction">Direction the arrow is facing</param>
-        /// <returns>ImageSource for the Player's arrow image facing a given direction</returns>
-        private ImageSource GetImageForPlayerAndDirection(Player player, Direction direction)
-        {
-            string imageFilename = String.Format("arrow_{0}_{1}.png", this.playerImageTagMap[player], direction.ToString());
-            string imageFilepath = String.Format(@"ms-appx:/Assets/{0}", imageFilename);
-            return new BitmapImage(new Uri(imageFilepath));
+            // CreateOrUpdateArrowImage will return null if it updated an existing arrow image
+            Image newArrowImage = this.uiBuilder.CreateOrUpdateArrowImage(player, arrow);
+            if (newArrowImage != null)
+            {
+                UiBuilder.AddItemToGrid(this.DynamicArrowPanel, newArrowImage);
+            }
         }
 
         /// <summary>
@@ -215,17 +162,7 @@ namespace BurgerBurgerBurger
         private void Hole_AddedToBoardCallback(BoardObject boardObject, EventArgs eventArgs)
         {
             Hole holeAdded = boardObject as Hole;
-            Image holeUi = null;
-
-            lock(this.holeLock)
-            {
-                holeUi = this.holes[holeIndex];
-                holeIndex++;
-            }
-
-            holeUi.Margin = new Thickness(holeAdded.CellCol * 60, holeAdded.CellRow * 60, 0, 0);
-            holeUi.Source = new BitmapImage(new Uri(@"ms-appx:/Assets/hole.png"));
-            holeUi.Visibility = Visibility.Visible;
+            UiBuilder.AddItemToGrid(this.DynamicHolePanel, this.uiBuilder.CreateHoleImage(holeAdded));
         }
 
         /// <summary>
@@ -239,41 +176,18 @@ namespace BurgerBurgerBurger
         {
             if (wallPosition == WallPositionFlags.Left || wallPosition == WallPositionFlags.Right)
             {
-                int xPosition = cellCol * 60 + (wallPosition == WallPositionFlags.Left ? 0 : 60) - 2;
-                int yPosition = cellRow * 60;
-                
-                Image vertWall = new Image
-                {
-                    Source = new BitmapImage(new Uri(@"ms-appx:/Assets/wall_vert.png")),
-                    Width = 4,
-                    Height = 60,
-                    Visibility = Visibility.Visible,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(xPosition, yPosition, 0, 0)
-                };
-                this.DynamicVertWallPanel.Children.Add(vertWall);
+                UiBuilder.AddItemToGrid(this.DynamicVertWallPanel,
+                    this.uiBuilder.CreateVerticalWallImage(cellCol, cellRow, wallPosition));
             }
             else if (wallPosition == WallPositionFlags.Up || wallPosition == WallPositionFlags.Down)
             {
-                int xPosition = cellCol * 60;
-                int yPosition = cellRow * 60 + (wallPosition == WallPositionFlags.Up ? 0 : 60) - 2;
-
-                Image horizWall = new Image
-                {
-                    Source = new BitmapImage(new Uri(@"ms-appx:/Assets/wall_horiz.png")),
-                    Width = 60,
-                    Height = 4,
-                    Visibility = Visibility.Visible,
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Margin = new Thickness(xPosition, yPosition, 0, 0)
-                };
-                this.DynamicHorizWallPanel.Children.Add(horizWall);
+                UiBuilder.AddItemToGrid(this.DynamicHorizWallPanel,
+                    this.uiBuilder.CreateHorizontalWallImage(cellCol, cellRow, wallPosition));
             }
-        }
-
+        } 
+        
         #endregion
 
     }
 }
+

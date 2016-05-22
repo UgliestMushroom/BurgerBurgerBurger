@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.UI.Core;
 
 namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
 {
@@ -10,6 +11,11 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
     /// </summary>
     public class Spawner : BoardObject
     {
+        /// <summary>
+        /// Event for when the Spawner creates a MovableObject on the Board.
+        /// </summary>
+        internal event MovableObject.MovableObjectHandler ObjectSpawnedHandler;
+
         /// <summary>
         /// Direction the MovableObjects that this Spawner creates will first move.
         /// </summary>
@@ -40,19 +46,45 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             movingObject.Turn();
         }
 
-        public void Start()
+        /// <summary>
+        /// Start the Spawner.
+        /// </summary>
+        /// <param name="dispatch">Dispatch to kick off background tasks (for spawning / movement)</param>
+        public async void Start(CoreDispatcher dispatch)
         {
-
-        }
-
-        public async void StartSpawner()
-        {
-            // TODO: loop this w/ timing mechanics
-            this.Spawn();
+            dispatch.RunAsync(CoreDispatcherPriority.Normal, () => this.StartSpawner());
+            dispatch.RunAsync(CoreDispatcherPriority.Normal, () => this.MoveSpawnedObjects());
         }
 
         /// <summary>
-        /// Create a new 
+        /// Start spawning objects.
+        /// </summary>
+        public async void StartSpawner()
+        {
+            while (Board.Instance.GameRunning)
+            {
+                this.Spawn();
+                await System.Threading.Tasks.Task.Delay(GameSettings.SpawnDelayMs);
+            }
+        }
+
+        /// <summary>
+        /// Move spawned objects.
+        /// </summary>
+        public async void MoveSpawnedObjects()
+        {
+            while(Board.Instance.GameRunning)
+            {
+                foreach(MovableObject movableObject in this.SpawnedObjects)
+                {
+                    movableObject.Move();
+                }
+                await System.Threading.Tasks.Task.Delay(GameSettings.MoveDelayMs);
+            }
+        }
+        
+        /// <summary>
+        /// Spawn a new MovableObject on the board.
         /// </summary>
         private void Spawn()
         {
@@ -99,6 +131,12 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
             }
 
             MovableObject newObject = new MovableObject(objectStartCol, objectStartRow, objectMovementDirection, objectTurnDirection, objectScore, GameSettings.CellsPerMove);
+
+            if (this.ObjectSpawnedHandler != null)
+            {
+                this.ObjectSpawnedHandler(newObject, null);
+            }
+
             this.SpawnedObjects.Add(newObject);
         }
     }
