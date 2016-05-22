@@ -44,7 +44,7 @@ namespace BurgerBurgerBurger
             
             // Create the UI Builder object and have it create the grid
             this.uiBuilder = new UiBuilder();
-            this.uiBuilder.CreateGrid();
+            this.uiBuilder.CreateGrid(this.GameHolderGrid, this.DynamicCheckerBoardPanel, this.GridCellPointerEntered, this.GridCellPointerExited, this.GridCellPointerPressed);
 
             // Add the Players, register callbacks, and inform the UI builder of the player
             player1 = new Player();

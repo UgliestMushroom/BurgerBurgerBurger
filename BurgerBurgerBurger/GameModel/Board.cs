@@ -68,12 +68,12 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// <summary>
         /// X position where the Board starts on the screen (does not assume start at 0); 0,0 is top left
         /// </summary>
-        private int GameBoardStartX { get; set; }
+        public int GameBoardStartX { get; private set; }
 
         /// <summary>
         /// Y position where Board starts on the screen (does not assume start at 0); 0,0 is top left
         /// </summary>
-        private int GameBoardStartY { get; set; }
+        public int GameBoardStartY { get; private set; }
 
         /// <summary>
         /// X position where Board ends on the screen (does not assume end at max X); 0,0 is top left
@@ -88,12 +88,12 @@ namespace Philhuge.Projects.BurgerBurgerBurger.GameModel
         /// <summary>
         /// Number of Board columns 
         /// </summary>
-        private int NumBoardCols { get; set; }
+        public int NumBoardCols { get; private set; }
 
         /// <summary>
         /// Number of Board rows
         /// </summary>
-        private int NumBoardRows { get; set; }
+        public int NumBoardRows { get; private set; }
 
         /// <summary>
         /// Width of each cell in x/y units

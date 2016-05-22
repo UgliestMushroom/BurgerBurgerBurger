@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
 
 namespace Philhuge.Projects.BurgerBurgerBurger
 {
@@ -17,6 +21,9 @@ namespace Philhuge.Projects.BurgerBurgerBurger
         private int CellHeightInPx { get; set; }
         private Dictionary<Player, string> PlayerImageTagMap { get; set; }
         private Dictionary<Player, Image[]> PlayerArrowsMap { get; set; }
+
+        private SolidColorBrush boardColor1 = new SolidColorBrush(Colors.CadetBlue);
+        private SolidColorBrush boardColor2 = new SolidColorBrush(Colors.CornflowerBlue);
 
         public UiBuilder()
         {
@@ -30,6 +37,65 @@ namespace Philhuge.Projects.BurgerBurgerBurger
         {
             this.PlayerImageTagMap.Add(player, imageTag);
             this.PlayerArrowsMap.Add(player, new Image[numArrows]);
+        }
+
+        /// <summary>
+        /// Create the visual game grid on the UI.
+        /// </summary>
+        /// <param name="gridHolder">Grid that houses the entire UI</param>
+        /// <param name="checkerPanel">Grid element where the rectangle will go</param>
+        /// <param name="onEnter">Mouse enter handler</param>
+        /// <param name="onExit">Mouse exit handler</param>
+        /// <param name="onPress">Mouse press handler</param>
+        public void CreateGrid(Grid gridHolder, Grid checkerPanel, PointerEventHandler onEnter, PointerEventHandler onExit, PointerEventHandler onPress)
+        {
+            gridHolder.Margin = new Thickness(Board.Instance.GameBoardStartX, Board.Instance.GameBoardStartY, 0, 0);
+
+            for(int row = 0; row < Board.Instance.NumBoardRows; row++)
+            {
+                for (int col = 0; col < Board.Instance.NumBoardCols; col++)
+                {
+                    string rectangleName = String.Format("Rec_{0}_{1}", col, row);
+                    Brush color = (row + col) % 2 == 0 ? boardColor1 : boardColor2;
+                    Thickness margin = new Thickness(
+                        (col * this.CellWidthInPx),
+                        (row * this.CellHeightInPx),
+                        0, 0);
+                    this.CreateAndAddGridRectangle(checkerPanel, rectangleName, color, margin, onEnter, onExit, onPress);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create an indiviual rectangle for the game grid and add it to the UI.
+        /// </summary>
+        /// <param name="checkerPanel">Grid element where the rectangle will go</param>
+        /// <param name="name">Name for the rectangle</param>
+        /// <param name="color">Color for the rectangle</param>
+        /// <param name="margin">Margin for the rectangle</param>
+        /// <param name="onEnter">Mouse enter handler</param>
+        /// <param name="onExit">Mouse exit handler</param>
+        /// <param name="onPress">Mouse press handler</param>
+        private void CreateAndAddGridRectangle(Grid checkerPanel, string name, Brush color, Thickness margin, 
+            PointerEventHandler onEnter, PointerEventHandler onExit, PointerEventHandler onPress)
+        {
+            Rectangle rectangle = new Rectangle
+            {
+                Name = name,
+                Fill = color,
+                Width = this.CellWidthInPx,
+                Height = this.CellHeightInPx,
+                Visibility = Visibility.Visible,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = margin
+            };
+
+            rectangle.PointerEntered += onEnter;
+            rectangle.PointerExited += onExit;
+            rectangle.PointerPressed += onPress;
+
+            checkerPanel.Children.Add(rectangle);
         }
 
         /// <summary>

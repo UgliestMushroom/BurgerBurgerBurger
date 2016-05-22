@@ -8,61 +8,16 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid x:Name="MainGrid" HorizontalAlignment="Left" Height="360" VerticalAlignment="Top" Width="360" Margin="0,0,0,0">
-            <Rectangle x:Name="Rec_0_0" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="0,0,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_1_0" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="60,0,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_2_0" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="120,0,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_3_0" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="180,0,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_4_0" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="240,0,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_5_0" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="300,0,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-
-            <Rectangle x:Name="Rec_0_1" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="0,60,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_1_1" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="60,60,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_2_1" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="120,60,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_3_1" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="180,60,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_4_1" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="240,60,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_5_1" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="300,60,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-
-            <Rectangle x:Name="Rec_0_2" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="0,120,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_1_2" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="60,120,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_2_2" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="120,120,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_3_2" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="180,120,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_4_2" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="240,120,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_5_2" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="300,120,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-
-            <Rectangle x:Name="Rec_0_3" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="0,180,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_1_3" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="60,180,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_2_3" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="120,180,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_3_3" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="180,180,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_4_3" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="240,180,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_5_3" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="300,180,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-
-            <Rectangle x:Name="Rec_0_4" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="0,240,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_1_4" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="60,240,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_2_4" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="120,240,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_3_4" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="180,240,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_4_4" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="240,240,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_5_4" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="300,240,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-
-            <Rectangle x:Name="Rec_0_5" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="0,300,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_1_5" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="60,300,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_2_5" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="120,300,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_3_5" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="180,300,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_4_5" Fill="#FFD1D1FD" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="240,300,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-            <Rectangle x:Name="Rec_5_5" Fill="#FFD4FDD0" HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="60" Margin="300,300,0,0" PointerEntered="GridCellPointerEntered" PointerExited="GridCellPointerExited" PointerPressed="GridCellPointerPressed"/>
-
+        
+        <Grid x:Name="GameHolderGrid">
+            <Grid x:Name="DynamicCheckerBoardPanel"></Grid>
+            <Grid x:Name="DynamicBasePanel"></Grid>
+            <Grid x:Name="DynamicSpawnerPanel"></Grid>
+            <Grid x:Name="DynamicArrowPanel"></Grid>
+            <Grid x:Name="DynamicHolePanel"></Grid>
+            <Grid x:Name="DynamicHorizWallPanel"></Grid>
+            <Grid x:Name="DynamicVertWallPanel"></Grid>
         </Grid>
-
-        <Grid x:Name="DynamicBasePanel"></Grid>
-        <Grid x:Name="DynamicHolePanel"></Grid>
-        <Grid x:Name="DynamicHorizWallPanel"></Grid>
-        <Grid x:Name="DynamicVertWallPanel"></Grid>
-
-        <Grid x:Name="DynamicSpawnerPanel"></Grid>
-
-
-        <Grid x:Name="DynamicArrowPanel"></Grid>
-
 
         <Button x:Name="NewButtonClick" Content="Start New Game" HorizontalAlignment="Left" Margin="10,389,0,0" VerticalAlignment="Top" Click="NewGameButton_Click"/>
     </Grid>
